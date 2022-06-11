@@ -11,7 +11,7 @@ namespace TSC_CMS.Models
         /// <summary>
         /// 堂數
         /// </summary>
-        public int? Lesson1 { get; set; }
+        public int Lesson1 { get; set; }
         /// <summary>
         /// 日期
         /// </summary>

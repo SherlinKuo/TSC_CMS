@@ -26,7 +26,7 @@ namespace TSC_CMS.Models
         /// <summary>
         /// 上課時段
         /// </summary>
-        public string? TimePeriod { get; set; }
+        public string TimePeriod { get; set; } = null!;
         /// <summary>
         /// 備註
         /// </summary>

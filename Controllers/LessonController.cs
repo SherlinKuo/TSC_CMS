@@ -32,15 +32,17 @@ namespace TSC_CMS.Controllers
         }
         // GET api/<LessonController>/5
         [HttpGet("{id}")]
-        public ActionResult<Lesson> Get(int id)
+        public ActionResult<IEnumerable<Lesson>> Get(int StudentId)
         {
-            var result = _tscSql.Lessons.Find(id);
+            var result = from a in _tscSql.Lessons
+                         where a.StudentId == StudentId
+                         select a;
             if (result == null)
             {
                 return NotFound("找無");
             }
 
-            return result;
+            return result.ToList();
         }
 
         // POST api/<LessonController>
