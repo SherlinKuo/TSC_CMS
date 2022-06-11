@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace TSC_CMS.Models
+namespace TSC_CMS.Dtos
 {
-    public partial class Lesson
+    public class LessonAddDto
     {
+        [Key]
         public int Id { get; set; }
-        /// <summary>
-        /// 堂數
-        /// </summary>
-        public int? Lesson1 { get; set; }
+
         /// <summary>
         /// 日期
         /// </summary>

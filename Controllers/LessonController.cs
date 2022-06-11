@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TSC_CMS.Dtos;
 using TSC_CMS.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -32,10 +33,10 @@ namespace TSC_CMS.Controllers
         }
         // GET api/<LessonController>/5
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Lesson>> Get(int StudentId)
+        public ActionResult<IEnumerable<Lesson>> Get(int id)
         {
             var result = from a in _tscSql.Lessons
-                         where a.StudentId == StudentId
+                         where a.StudentId == id
                          select a;
             if (result == null)
             {
@@ -47,9 +48,19 @@ namespace TSC_CMS.Controllers
 
         // POST api/<LessonController>
         [HttpPost]
-        public ActionResult<Lesson> Post([FromBody] Lesson value)
+        public ActionResult<Lesson> Post([FromBody] LessonAddDto value)
         {
-            _tscSql.Lessons.Add(value);
+            var result = from a in _tscSql.Lessons
+                         where a.StudentId == value.StudentId && a.Action == 1 
+                         select a;
+            Lesson LessonData = new Lesson
+            {
+                StudentId = value.StudentId,
+                Date = value.Date,
+                Action = value.Action,
+                Lesson1 = result.Count() + 1
+            };
+            _tscSql.Lessons.Add(LessonData);
             _tscSql.SaveChanges();
 
             // 新增玩之後用取單筆的方式回傳
@@ -57,22 +68,6 @@ namespace TSC_CMS.Controllers
 
         }
 
-        // PUT api/<LessonController>/5
-        [HttpPut("{id}")]
-        public ActionResult<Lesson> Put(int id, [FromBody] Lesson value)
-        {
-            _tscSql.Entry(value).State = EntityState.Modified;
-
-            try
-            {
-                _tscSql.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                return StatusCode(500, "存取發生錯誤");
-            }
-            return NoContent();
-        }
 
         // DELETE api/<LessonController>/5
         [HttpDelete("{id}")]
