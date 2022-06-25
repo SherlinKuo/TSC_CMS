@@ -94,9 +94,7 @@ namespace TSC_CMS.Models
                     .HasComment("聯絡電話");
 
                 entity.Property(e => e.TimePeriod)
-                    .HasMaxLength(10)
                     .HasColumnName("time_period")
-                    .IsFixedLength()
                     .HasComment("上課時段");
             });
 
@@ -110,8 +108,7 @@ namespace TSC_CMS.Models
 
                 entity.Property(e => e.TimePeriod1)
                     .HasMaxLength(10)
-                    .HasColumnName("time_period")
-                    .IsFixedLength();
+                    .HasColumnName("time_period");
             });
 
             OnModelCreatingPartial(modelBuilder);

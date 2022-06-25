@@ -2,10 +2,10 @@
 
 namespace TSC_CMS.Dtos
 {
-    public class StudentListDto
+    public partial class StudentListDto
     {
-        [Key]
+        //[Key]
         public int Id { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; }
     }
 }

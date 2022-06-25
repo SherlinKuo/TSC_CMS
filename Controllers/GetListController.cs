@@ -37,6 +37,24 @@ namespace TSC_CMS.Controllers
             });
         }
 
-        
+        [HttpGet("{id}")]
+        public ActionResult<IEnumerable<StudentListDto>> Get(int id)
+        {
+            var result = from a in _tscSql.Students
+                         where a.TimePeriod == id
+                         select a;
+            if (result.Count() == 0)
+            {
+                return NotFound("找無");
+            }
+
+            return Ok(result.ToList()
+                .Select(a => new StudentListDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                }));
+        }
+
     }
 }

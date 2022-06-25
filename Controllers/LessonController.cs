@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using TSC_CMS.Dtos;
 using TSC_CMS.Models;
+using Action = TSC_CMS.Models.Action;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,7 +16,7 @@ namespace TSC_CMS.Controllers
 
         //c# 宣告方式：變數 型態
         private readonly TSC_SQLContext _tscSql;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         //建構子與類別名稱相同
         //C# 函式宣告方式： [funcName](型態 參數)
@@ -26,10 +28,37 @@ namespace TSC_CMS.Controllers
 
         // GET: api/<studentsController1>
         [HttpGet]
-        public ActionResult<IEnumerable<Lesson>> Get()
+        public ActionResult<IEnumerable<LessonDetailDto>> Get()
         {
             //TSC_SQLContext 中有 Student and Lesson
-            return _tscSql.Lessons.ToList();
+            List<Lesson> orgData = _tscSql.Lessons.ToList();
+            IEnumerable<StudentListDto> student = _tscSql.Students.ToList().Select(a => new StudentListDto
+               {
+                   Id = a.Id,
+                   Name = a.Name,
+               });
+            //Console.Write(studentListDtos);
+            List<LessonDetailDto> lessonDetailDto = new List<LessonDetailDto>();
+            foreach (var item in orgData)
+            {
+                 List<Action> actionList = _tscSql.Actions.ToList();
+
+
+
+                LessonDetailDto temp = new LessonDetailDto
+                {
+                    Id = item.Id,
+                    Date = item.Date,
+                    Lesson1 = item.Lesson1 % 8 == 0 ? 1 : item.Lesson1 % 8 + 1,
+                    Action = actionList[item.Action].Action1,
+                    Student = student.ToList().SingleOrDefault(ele => ele.Id == item.StudentId).Name
+                    //[item.StudentId].Name
+                };
+
+                lessonDetailDto.Add(temp);
+            }
+
+            return lessonDetailDto;
         }
         // GET api/<LessonController>/5
         [HttpGet("{id}")]
@@ -58,8 +87,9 @@ namespace TSC_CMS.Controllers
                 StudentId = value.StudentId,
                 Date = value.Date,
                 Action = value.Action,
-                Lesson1 = result.Count() + 1
+                Lesson1 = value.Action == 1 ? result.Count() : result.Count() + 1
             };
+            Console.Write(LessonData);
             _tscSql.Lessons.Add(LessonData);
             _tscSql.SaveChanges();
 
