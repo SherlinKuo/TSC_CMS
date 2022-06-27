@@ -43,17 +43,12 @@ namespace TSC_CMS.Controllers
             var result = from a in _tscSql.Students
                          where a.TimePeriod == id
                          select a;
-            if (result.Count() == 0)
-            {
-                return NotFound("找無");
-            }
-
-            return Ok(result.ToList()
+            return result.ToList()
                 .Select(a => new StudentListDto
                 {
                     Id = a.Id,
                     Name = a.Name,
-                }));
+                }).ToList();
         }
 
     }

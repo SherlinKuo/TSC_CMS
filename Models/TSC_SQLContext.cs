@@ -23,7 +23,11 @@ namespace TSC_CMS.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=tcp:172.20.10.6;Initial Catalog=TSC_SQL;user id=sa;password=S@herlin;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,28 +73,26 @@ namespace TSC_CMS.Models
 
                 entity.Property(e => e.Id).HasComment("學生 Id");
 
+                entity.Property(e => e.Money).HasColumnName("money");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(10)
                     .HasColumnName("name")
-                    .IsFixedLength()
                     .HasComment("學生名");
 
                 entity.Property(e => e.NameEn)
                     .HasMaxLength(10)
                     .HasColumnName("name_en")
-                    .IsFixedLength()
                     .HasComment("學生中文");
 
                 entity.Property(e => e.Note)
-                    .HasMaxLength(15)
+                    .HasMaxLength(30)
                     .HasColumnName("note")
-                    .IsFixedLength()
                     .HasComment("備註");
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(10)
                     .HasColumnName("phone")
-                    .IsFixedLength()
                     .HasComment("聯絡電話");
 
                 entity.Property(e => e.TimePeriod)

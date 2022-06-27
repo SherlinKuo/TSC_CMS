@@ -28,51 +28,85 @@ namespace TSC_CMS.Controllers
 
         // GET: api/<studentsController1>
         [HttpGet]
-        public ActionResult<IEnumerable<LessonDetailDto>> Get()
+        public ActionResult<LessonDetailDto> Get()
         {
             //TSC_SQLContext 中有 Student and Lesson
-            List<Lesson> orgData = _tscSql.Lessons.ToList();
+            List<Lesson> orgData = Enumerable.Reverse(_tscSql.Lessons).Take(10).ToList();
+            List<Action> actionList = _tscSql.Actions.ToList();
             IEnumerable<StudentListDto> student = _tscSql.Students.ToList().Select(a => new StudentListDto
                {
                    Id = a.Id,
                    Name = a.Name,
                });
             //Console.Write(studentListDtos);
-            List<LessonDetailDto> lessonDetailDto = new List<LessonDetailDto>();
+            LessonDetailDto lessonDetailDto = new LessonDetailDto();
+            List<LessonDetail> lessonDetailList = new List<LessonDetail>();
             foreach (var item in orgData)
             {
-                 List<Action> actionList = _tscSql.Actions.ToList();
-
-
-
-                LessonDetailDto temp = new LessonDetailDto
+                LessonDetail temp = new LessonDetail
                 {
                     Id = item.Id,
                     Date = item.Date,
-                    Lesson1 = item.Lesson1 % 8 == 0 ? 1 : item.Lesson1 % 8 + 1,
-                    Action = actionList[item.Action].Action1,
+                    Lesson1 = item.Lesson1 % 8 == 0 ? 8 : item.Lesson1 % 8,
+                    Action = actionList.SingleOrDefault(ele => ele.Id == item.Action).Action1,
                     Student = student.ToList().SingleOrDefault(ele => ele.Id == item.StudentId).Name
-                    //[item.StudentId].Name
+                    
                 };
 
-                lessonDetailDto.Add(temp);
+                lessonDetailList.Add(temp);
             }
+            lessonDetailDto.Lessons = lessonDetailList;
 
             return lessonDetailDto;
         }
         // GET api/<LessonController>/5
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Lesson>> Get(int id)
+        public ActionResult<LessonDetailDto> Get(int id)
         {
             var result = from a in _tscSql.Lessons
                          where a.StudentId == id
                          select a;
-            if (result == null)
+            List<Lesson> orgData = Enumerable.Reverse(result).Take(10).ToList();
+            List<Action> actionList = _tscSql.Actions.ToList();
+            IEnumerable<StudentListDto> student = _tscSql.Students.ToList().Select(a => new StudentListDto
             {
-                return NotFound("找無");
+                Id = a.Id,
+                Name = a.Name,
+            });
+            LessonDetailDto lessonDetailDto = new LessonDetailDto();
+            List<LessonDetail> lessonDetailList = new List<LessonDetail>();
+            foreach (var item in orgData)
+            {
+                LessonDetail temp = new LessonDetail
+                {
+                    Id = item.Id,
+                    Date = item.Date,
+                    Lesson1 = item.Lesson1 % 8 == 0 ? 8 : item.Lesson1 % 8,
+                    Action = actionList.SingleOrDefault(ele => ele.Id == item.Action).Action1,
+                    Student = student.ToList().SingleOrDefault(ele => ele.Id == item.StudentId).Name
+
+                };
+
+                lessonDetailList.Add(temp);
+            }
+            lessonDetailDto.Lessons = lessonDetailList;
+            //if (result == null)
+            //{
+            //    return NotFound("找無");
+            //}
+
+            int lessonCounter = result.Where(ele => ele.Action == 1).ToList().Count;
+            
+            int payCounter = result.Where(ele => ele.Action == 4).ToList().Count;
+            if (lessonCounter / 8 + 1 > payCounter)
+            {
+                lessonDetailDto.PayStatus = 8;
+            }else if((lessonCounter + 1) / 8 + 1 > payCounter)
+            {
+                lessonDetailDto.PayStatus = 7;
             }
 
-            return result.ToList();
+            return lessonDetailDto;
         }
 
         // POST api/<LessonController>
@@ -87,7 +121,7 @@ namespace TSC_CMS.Controllers
                 StudentId = value.StudentId,
                 Date = value.Date,
                 Action = value.Action,
-                Lesson1 = value.Action == 1 ? result.Count() : result.Count() + 1
+                Lesson1 = value.Action == 1 ? result.Count() + 1 : result.Count()
             };
             Console.Write(LessonData);
             _tscSql.Lessons.Add(LessonData);

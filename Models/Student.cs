@@ -29,5 +29,6 @@ namespace TSC_CMS.Models
         /// 備註
         /// </summary>
         public string? Note { get; set; }
+        public int? Money { get; set; }
     }
 }

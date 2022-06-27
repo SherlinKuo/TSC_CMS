@@ -40,10 +40,6 @@ namespace TSC_CMS.Controllers
         public   ActionResult<Student> Get(int id)
         {
             var result = _tscSql.Students.Find(id);
-            if (result == null)
-            {
-                 return NotFound("找無");
-            }
 
             return result;
         }
