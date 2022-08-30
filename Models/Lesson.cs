@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TSC_CMS.Models
 {
     public partial class Lesson
     {
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// 堂數

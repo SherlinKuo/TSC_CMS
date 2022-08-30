@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using TSC_CMS.Dtos;
 using TSC_CMS.Models;
 using Action = TSC_CMS.Models.Action;
@@ -26,6 +27,10 @@ namespace TSC_CMS.Controllers
             _tscSql = tscSql;
         }
 
+        /// <summary>
+        /// 上課紀錄
+        /// </summary>
+        /// <returns></returns>
         // GET: api/<studentsController1>
         [HttpGet]
         public ActionResult<LessonDetailDto> Get()
@@ -46,7 +51,7 @@ namespace TSC_CMS.Controllers
                 LessonDetail temp = new LessonDetail
                 {
                     Id = item.Id,
-                    Date = item.Date,
+                    Date = item.Date.ToString("yyyy/MM/dd ddd", CultureInfo.CreateSpecificCulture("zh-TW")),
                     Lesson1 = item.Lesson1 % 8 == 0 ? 8 : item.Lesson1 % 8,
                     Action = actionList.SingleOrDefault(ele => ele.Id == item.Action).Action1,
                     Student = student.ToList().SingleOrDefault(ele => ele.Id == item.StudentId).Name
@@ -80,7 +85,7 @@ namespace TSC_CMS.Controllers
                 LessonDetail temp = new LessonDetail
                 {
                     Id = item.Id,
-                    Date = item.Date,
+                    Date = item.Date.ToString("yyyy/MM/dd ddd", CultureInfo.CreateSpecificCulture("zh-TW")),
                     Lesson1 = item.Lesson1 % 8 == 0 ? 8 : item.Lesson1 % 8,
                     Action = actionList.SingleOrDefault(ele => ele.Id == item.Action).Action1,
                     Student = student.ToList().SingleOrDefault(ele => ele.Id == item.StudentId).Name
@@ -109,6 +114,11 @@ namespace TSC_CMS.Controllers
             return lessonDetailDto;
         }
 
+        /// <summary>
+        /// 新增上課紀錄
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         // POST api/<LessonController>
         [HttpPost]
         public ActionResult<Lesson> Post([FromBody] LessonAddDto value)
@@ -133,6 +143,11 @@ namespace TSC_CMS.Controllers
         }
 
 
+        /// <summary>
+        /// 刪除上課紀錄
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE api/<LessonController>/5
         [HttpDelete("{id}")]
         public ActionResult<Lesson> Delete(int id)

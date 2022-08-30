@@ -24,7 +24,10 @@ namespace TSC_CMS.Controllers
             _tscSql = tscSql;
         }
 
-
+        /// <summary>
+        /// 取得學生詳細資料
+        /// </summary>
+        /// <returns></returns>
         // GET: api/<studentsController1>
         [HttpGet]
         public ActionResult<IEnumerable<Student>> Get()
@@ -33,10 +36,13 @@ namespace TSC_CMS.Controllers
             return _tscSql.Students.ToList();
         }
 
-        //取單筆資料
+        /// <summary>
+        /// 取得特定學生資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET api/<studentsController1>/5
         [HttpGet("{id}")]
-        // ActionResult：會回傳狀態
         public   ActionResult<Student> Get(int id)
         {
             var result = _tscSql.Students.Find(id);
@@ -44,6 +50,25 @@ namespace TSC_CMS.Controllers
             return result;
         }
 
+        //取單筆資料
+        // GET api/<studentsController1>/name/王
+        [HttpGet("name/{name}")]
+        // ActionResult：會回傳狀態
+        public ActionResult<IEnumerable<Student>> SeachName(string name)
+        {
+            var result = from a in _tscSql.Students
+                         where a.Name.Contains(name) || a.NameEn.Contains(name)
+                         select a;
+
+            return result.ToList();
+        }
+
+
+        /// <summary>
+        /// 新增學生
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         // POST api/<studentsController1>
         [HttpPost]
         public ActionResult<Student> Post([FromBody] Student value)

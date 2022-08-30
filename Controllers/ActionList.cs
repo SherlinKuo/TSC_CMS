@@ -23,7 +23,10 @@ namespace TSC_CMS.Controllers
             // 取得資料庫
             _tscSql = tscSql;
         }
-
+        /// <summary>
+        /// 取得上課類型
+        /// </summary>
+        /// <returns></returns>
         // GET: api/<ActionList>
         [HttpGet]
         public ActionResult<IEnumerable<Action>> Get()

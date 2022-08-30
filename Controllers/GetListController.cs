@@ -24,7 +24,10 @@ namespace TSC_CMS.Controllers
 
 
         // GET: api/<GetListController>
-
+        /// <summary>
+        /// 取得學生資料
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<StudentListDto> Get()
         {
@@ -37,6 +40,11 @@ namespace TSC_CMS.Controllers
             });
         }
 
+        /// <summary>
+        /// 取得特地學生資料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<StudentListDto>> Get(int id)
         {
